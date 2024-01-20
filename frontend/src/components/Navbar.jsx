@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <BootstrapNavbar bg="white" expand="lg" className="shadow-sm">
       <Container>
-        <BootstrapNavbar.Brand as={Link} to={routes.mainPage}>
+        <BootstrapNavbar.Brand as={Link} to={routes.mainPage()}>
           {t('title')}
         </BootstrapNavbar.Brand>
       </Container>

@@ -9,10 +9,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import avatarSrc from '../assets/avatar.jpg';
+import { useAuth } from '../hooks/index.js';
 import routes from '../routes.js';
 
-const Login = () => {
+const LoginPage = () => {
   const usernameRef = useRef();
+  const auth = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -28,10 +30,10 @@ const Login = () => {
     },
     onSubmit: async (values) => {
       try {
-        const res = await axios.post(routes.login, values);
-        console.log(res);
+        const response = await axios.post(routes.login(), values);
+        auth.logIn(response.data);
         const { from } = location.state || {
-          from: { pathname: routes.mainPage },
+          from: { pathname: routes.mainPage() },
         };
         navigate(from);
       } catch (error) {
@@ -117,4 +119,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
