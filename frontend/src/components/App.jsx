@@ -4,19 +4,18 @@ import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-route
 import { ToastContainer as Toaster } from 'react-toastify';
 
 import routes from '../routes.js';
+import { useIsAuthorized } from '../slices/auth.js';
 
-import Navbar from './Navbar.jsx';
 import LoginPage from './LoginPage.jsx';
+import MainPage from './MainPage.jsx';
+import Navbar from './Navbar.jsx';
 import NotFoundPage from './NotFoundPage.jsx';
-import ChatPage from './ChatPage.jsx';
 
 const PrivateRoute = ({ children }) => {
-  const auth = useAuth();
+  const isAuthorized = useIsAuthorized();
   const location = useLocation();
 
-  return (
-    auth.loggedIn ? children : <Navigate to={routes.loginPage()} state={{ from: location }} />
-  );
+  return isAuthorized ? children : <Navigate to={routes.loginPage()} state={{ from: location }} />;
 };
 
 const App = () => (
@@ -26,11 +25,11 @@ const App = () => (
       <Routes>
         <Route
           path={routes.mainPage()}
-          element={(
+          element={
             <PrivateRoute>
-              <ChatPage />
+              <MainPage />
             </PrivateRoute>
-          )}
+          }
         />
         <Route path={routes.loginPage()} element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -1,20 +1,19 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useRef } from 'react';
-import {
-  Button, Card, Col, Container, FloatingLabel, Form, Row,
-} from 'react-bootstrap';
+import { Button, Card, Col, Container, FloatingLabel, Form, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import avatarSrc from '../assets/avatar.jpg';
-import { useAuth } from '../hooks/index.js';
 import routes from '../routes.js';
+import { login } from '../slices/auth.js';
 
 const LoginPage = () => {
   const usernameRef = useRef();
-  const auth = useAuth();
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -31,7 +30,7 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(routes.login(), values);
-        auth.logIn(response.data);
+        dispatch(login(response.data));
         const { from } = location.state || {
           from: { pathname: routes.mainPage() },
         };
@@ -59,7 +58,11 @@ const LoginPage = () => {
           <Card>
             <Card.Body className="p-4">
               <Row>
-                <Col xs={12} md={6} className="align-items-center justify-content-center text-center">
+                <Col
+                  xs={12}
+                  md={6}
+                  className="align-items-center justify-content-center text-center"
+                >
                   <img src={avatarSrc} className="rounded-circle my-3" alt={t('login.title')} />
                 </Col>
                 <Col xs={12} md={6}>
@@ -107,9 +110,7 @@ const LoginPage = () => {
             </Card.Body>
             <Card.Footer className="p-4">
               <div className="text-center">
-                {t('login.noAccount')}
-                {' '}
-                <Link to="/signup">{t('login.signup')}</Link>
+                {t('login.noAccount')} <Link to="/signup">{t('login.signup')}</Link>
               </div>
             </Card.Footer>
           </Card>
