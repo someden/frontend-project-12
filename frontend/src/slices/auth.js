@@ -22,7 +22,7 @@ const slice = createSlice({
 
 export default slice;
 
-export const { login, logout } = slice.actions;
+export const { actions } = slice;
 
 export const selectAuth = (state) => state[slice.name];
 export const selectToken = (state) => selectAuth(state).token;

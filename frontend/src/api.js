@@ -1,8 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { useSelector } from 'react-redux';
 
 import routes from './routes';
 
+import { createSelector } from '@reduxjs/toolkit';
 import { selectToken } from '../slices/auth';
+import { selectCurrentChannelId } from '../slices/ui';
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -63,3 +66,18 @@ export const {
   useGetMessagesQuery,
   useAddMessageMutation,
 } = api;
+
+export const selectCurrentChannel = createSelector(selectCurrentChannelId, (currentChannelId) =>
+  api.endpoints.getChannels.select(currentChannelId)
+);
+
+export const selectCurrentChannelMessages = createSelector(
+  selectCurrentChannelId,
+  (state, currentChannelId) =>
+    api.endpoints.getMessages
+      .select()(state)
+      .data.filter((m) => m.channelId === currentChannelId)
+);
+
+export const useCurrentChannel = () => useSelector(selectCurrentChannel);
+export const useCurrentChannelMessages = () => useSelector(selectCurrentChannelMessages);

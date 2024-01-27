@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 import avatarSrc from '../assets/avatar.jpg';
 import routes from '../routes.js';
-import { login } from '../slices/auth.js';
+import { actions } from '../slices/auth.js';
 
 const LoginPage = () => {
   const usernameRef = useRef();
@@ -30,7 +30,7 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(routes.login(), values);
-        dispatch(login(response.data));
+        dispatch(actions.login(response.data));
         const { from } = location.state || {
           from: { pathname: routes.mainPage() },
         };
