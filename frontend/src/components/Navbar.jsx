@@ -3,7 +3,7 @@ import { Navbar as BootstrapNavbar, Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import routes from '../routes.js';
+import routes from '../routes';
 
 const Navbar = () => {
   const { t } = useTranslation();

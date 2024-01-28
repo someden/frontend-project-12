@@ -1,11 +1,15 @@
 import { useFormik } from 'formik';
 import React, { useEffect, useRef } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import {
+  Button,
+  FloatingLabel,
+  Form, Modal,
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { useAddChannelMutation, useGetChannelsQuery } from '../../api.js';
-import { getChannelValidationSchema } from '../../utils.js';
+import { useAddChannelMutation, useGetChannelsQuery } from '../../store/api';
+import { getChannelValidationSchema } from '../../utils';
 
 const Add = ({ handleClose }) => {
   const { data: channels } = useGetChannelsQuery();
@@ -25,9 +29,13 @@ const Add = ({ handleClose }) => {
     validationSchema: getChannelValidationSchema(channelNames),
     onSubmit: async ({ name }) => {
       const channel = { name };
-      await addChannel(channel).unwrap();
-      toast.success(t('channels.created'));
-      handleClose();
+      try {
+        await addChannel(channel).unwrap();
+        toast.success(t('channels.created'));
+        handleClose();
+      } catch (error) {
+        toast.error(t('errors.network'));
+      }
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -47,7 +55,7 @@ const Add = ({ handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
-          <FloatingLabel controlId="name" className="mb-2" label={t('modals.channelName')}>
+          <FloatingLabel controlId="name" className="mb-4" label={t('modals.channelName')}>
             <Form.Control
               ref={inputRef}
               required
