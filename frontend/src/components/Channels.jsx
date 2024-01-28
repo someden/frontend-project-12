@@ -1,21 +1,92 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Button, ButtonGroup, Dropdown, Nav, NavItem, Spinner } from 'react-bootstrap';
+import { PlusSquare } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+
 import { useGetChannelsQuery } from '../api';
-import { useUsername } from '../slices/auth';
+import { actions } from '../slices/ui';
 
 const Channels = () => {
   const { t } = useTranslation();
-  const { data, isLoading } = useGetChannelsQuery();
-  const username = useUsername();
+  const dispatch = useDispatch();
+  const { data: channels, isLoading } = useGetChannelsQuery();
 
-  console.log('channels', data, username);
+  const handleSelect = (channelId) => () => {
+    dispatch(actions.setCurrentChannelId({ channelId }));
+  };
+  const handleAdd = () => {
+    dispatch(actions.openModal({ type: 'add' }));
+  };
+  const handleDelete = (channelId) => () => {
+    dispatch(actions.openModal({ type: 'delete', extra: { channelId } }));
+  };
+  const handleRename = (channelId) => () => {
+    dispatch(actions.openModal({ type: 'rename', extra: { channelId } }));
+  };
 
   return isLoading ? (
     <Spinner animation="border" role="status" variant="primary">
       <span className="visually-hidden">{t('loading')}</span>
     </Spinner>
-  ) : null;
+  ) : (
+    <>
+      <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
+        <b>{t('channels.channels')}</b>
+        <Button
+          type="button"
+          variant="group-vertical"
+          className="p-0 text-primary"
+          onClick={handleAdd}
+        >
+          <PlusSquare size={20} />
+          <span className="visually-hidden">+</span>
+        </Button>
+      </div>
+      <Nav fill variant="pills" className="flex-column px-2 mb-3 overflow-auto h-100 d-block">
+        {channels.map((channel) => (
+          <NavItem key={channel.id} className="w-100">
+            {channel.removable ? (
+              <Dropdown as={ButtonGroup} className="d-flex">
+                <Button
+                  type="button"
+                  key={channel.id}
+                  className="w-100 rounded-0 text-start text-truncate"
+                  onClick={handleSelect}
+                  variant={variant}
+                >
+                  <span className="me-1">#</span>
+                  {channel.name}
+                </Button>
+                <Dropdown.Toggle split className="flex-grow-0" variant={variant}>
+                  <span className="visually-hidden">{t('channels.menu')}</span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={handleDelete(channel.id)}>
+                    {t('channels.delete')}
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={handleRename(channel.id)}>
+                    {t('channels.rename')}
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <Button
+                type="button"
+                variant={variant}
+                key={channel.id}
+                className="w-100 rounded-0 text-start"
+                onClick={handleSelect}
+              >
+                <span className="me-1">#</span>
+                {channel.name}
+              </Button>
+            )}
+          </NavItem>
+        ))}
+      </Nav>
+    </>
+  );
 };
 
 export default Channels;

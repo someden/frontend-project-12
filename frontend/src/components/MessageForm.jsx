@@ -56,7 +56,7 @@ const MessageForm = ({ channel }) => {
         />
         <Button variant="group-vertical" type="submit" disabled={disabled}>
           <ArrowRightSquare size={20} />
-          <span className="visually-hidden">{t('chat.send')}</span>
+          <span className="visually-hidden">{t('submit')}</span>
         </Button>
       </InputGroup>
     </Form>
