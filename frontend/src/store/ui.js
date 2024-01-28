@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
-import { api } from '../api.js';
+import { api } from './api';
 
 const defaultChannelId = '1';
 

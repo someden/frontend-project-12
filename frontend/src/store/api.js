@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { useSelector } from 'react-redux';
 
-import routes from './routes';
+import routes from '../routes';
 
-import { createSelector } from '@reduxjs/toolkit';
-import { selectToken } from '../slices/auth';
-import { selectCurrentChannelId } from '../slices/ui';
+import { selectToken } from './auth';
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -29,6 +26,7 @@ export const api = createApi({
         method: 'POST',
         body: channel,
       }),
+      invalidatesTags: ['Channel'],
     }),
     updateChannel: builder.mutation({
       query: (channel) => ({
@@ -36,13 +34,14 @@ export const api = createApi({
         method: 'PATCH',
         body: channel,
       }),
+      invalidatesTags: ['Channel'],
     }),
     deleteChannel: builder.mutation({
       query: (id) => ({
         url: routes.channel(id),
         method: 'DELETE',
-        invalidatesTags: ['Channel', 'Message'],
       }),
+      invalidatesTags: ['Channel', 'Message'],
     }),
     getMessages: builder.query({
       query: () => routes.messages(),
@@ -54,6 +53,7 @@ export const api = createApi({
         method: 'POST',
         body: message,
       }),
+      invalidatesTags: ['Message'],
     }),
   }),
 });
@@ -66,18 +66,3 @@ export const {
   useGetMessagesQuery,
   useAddMessageMutation,
 } = api;
-
-export const selectCurrentChannel = createSelector(selectCurrentChannelId, (currentChannelId) =>
-  api.endpoints.getChannels.select(currentChannelId)
-);
-
-export const selectCurrentChannelMessages = createSelector(
-  selectCurrentChannelId,
-  (state, currentChannelId) =>
-    api.endpoints.getMessages
-      .select()(state)
-      .data.filter((m) => m.channelId === currentChannelId)
-);
-
-export const useCurrentChannel = () => useSelector(selectCurrentChannel);
-export const useCurrentChannelMessages = () => useSelector(selectCurrentChannelMessages);

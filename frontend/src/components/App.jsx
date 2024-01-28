@@ -1,16 +1,19 @@
 import React from 'react';
 import { Stack } from 'react-bootstrap';
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import {
+  Navigate,
+  Route, BrowserRouter as Router, Routes, useLocation,
+} from 'react-router-dom';
 import { ToastContainer as Toaster } from 'react-toastify';
 
-import routes from '../routes.js';
-import { useIsAuthorized } from '../slices/auth.js';
+import routes from '../routes';
+import { useIsAuthorized } from '../store/auth';
 
-import LoginPage from './LoginPage.jsx';
-import MainPage from './MainPage.jsx';
-import Navbar from './Navbar.jsx';
-import NotFoundPage from './NotFoundPage.jsx';
-import SignupPage from './SignupPage.jsx';
+import LoginPage from './LoginPage';
+import MainPage from './MainPage';
+import Navbar from './Navbar';
+import NotFoundPage from './NotFoundPage';
+import SignupPage from './SignupPage';
 
 const PrivateRoute = ({ children }) => {
   const isAuthorized = useIsAuthorized();
@@ -26,11 +29,11 @@ const App = () => (
       <Routes>
         <Route
           path={routes.mainPage()}
-          element={
+          element={(
             <PrivateRoute>
               <MainPage />
             </PrivateRoute>
-          }
+          )}
         />
         <Route path={routes.loginPage()} element={<LoginPage />} />
         <Route path={routes.signupPage()} element={<SignupPage />} />

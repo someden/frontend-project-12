@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
-import { isAuthorized } from '../slices/auth.js';
-
 const slice = createSlice({
   name: 'auth',
   initialState: JSON.parse(localStorage.getItem('auth')) || { username: null, token: null },

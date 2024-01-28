@@ -1,12 +1,17 @@
 import { useFormik } from 'formik';
+import leoProfanity from 'leo-profanity';
 import React, { useEffect, useRef } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import {
+  Button,
+  FloatingLabel,
+  Form, Modal,
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { useGetChannelsQuery, useUpdateChannelMutation } from '../../api.js';
-import { useModalExtra } from '../../slices/ui.js';
-import { getChannelValidationSchema } from '../../utils.js';
+import { useGetChannelsQuery, useUpdateChannelMutation } from '../../store/api';
+import { useModalExtra } from '../../store/ui';
+import { getChannelValidationSchema } from '../../utils';
 
 const Rename = ({ handleClose }) => {
   const { t } = useTranslation();
@@ -25,9 +30,15 @@ const Rename = ({ handleClose }) => {
     },
     validationSchema: getChannelValidationSchema(channelNames),
     onSubmit: async ({ name }) => {
-      await updateChannel({ name, id: channelId }).unwrap();
-      toast.success(t('channels.renamed'));
-      handleClose();
+      const cleanName = leoProfanity.clean(name);
+      getChannelValidationSchema(channelNames).validateSync({ name: cleanName });
+      try {
+        await updateChannel({ name: cleanName, id: channelId }).unwrap();
+        toast.success(t('channels.renamed'));
+        handleClose();
+      } catch (error) {
+        toast.error(t('errors.network'));
+      }
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -47,7 +58,7 @@ const Rename = ({ handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
-          <FloatingLabel controlId="name" className="mb-2" label={t('modals.editChannelName')}>
+          <FloatingLabel controlId="name" className="mb-4" label={t('modals.editChannelName')}>
             <Form.Control
               ref={inputRef}
               required

@@ -41,7 +41,6 @@ export default {
       rename: 'Переименовать канал',
     },
     validation: {
-      alreadyExists: 'Такой пользователь уже существует',
       max: 'От 3 до 20 символов',
       min: 'От 3 до 20 символов',
       passMustMatch: 'Пароли должны совпадать',
@@ -53,7 +52,7 @@ export default {
       title: 'Регистрация',
       username: 'Имя пользователя',
       password: 'Пароль',
-      confirm: 'Подтвердите пароль',
+      confirmPassword: 'Подтвердите пароль',
       submit: 'Зарегистрироваться',
     },
     notFound: {
@@ -62,6 +61,7 @@ export default {
     },
     errors: {
       authFailed: 'Неверные имя пользователя или пароль',
+      alreadyExists: 'Такой пользователь уже существует',
       network: 'Ошибка соединения',
       unknown: 'Неизвестная ошибка',
     },

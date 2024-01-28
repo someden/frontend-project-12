@@ -1,25 +1,29 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-import { useCurrentChannel, useCurrentChannelMessages, useGetMessagesQuery } from '../api';
+import { useGetChannelsQuery, useGetMessagesQuery } from '../store/api';
+import { selectCurrentChannelId } from '../store/ui';
 
-import MessageForm from './MessageForm.jsx';
+import MessageForm from './MessageForm';
 
 const Chat = () => {
   const { t } = useTranslation();
-  const { isLoading } = useGetMessagesQuery();
+  const { data: channels } = useGetChannelsQuery();
+  const { data: allMessages, isLoading } = useGetMessagesQuery();
+  const currentChannelId = useSelector(selectCurrentChannelId);
   const messagesBox = useRef(null);
 
-  const currentChannel = useCurrentChannel();
-  const messages = useCurrentChannelMessages();
+  const currentChannel = channels?.find(({ id }) => currentChannelId === id);
+  const messages = (allMessages || []).filter(({ channelId }) => currentChannelId === channelId);
 
   useLayoutEffect(() => {
     messagesBox.current?.scrollTo({
       top: messagesBox.current.scrollHeight,
       behavior: 'smooth',
     });
-  }, [data]);
+  }, [allMessages]);
 
   return isLoading ? (
     <Spinner animation="border" role="status" variant="primary">
@@ -45,7 +49,7 @@ const Chat = () => {
         ))}
       </div>
       <div className="mt-auto px-5 py-3">
-        <MessageForm channel={currentChannel} />
+        {currentChannel && <MessageForm channel={currentChannel} />}
       </div>
     </div>
   );

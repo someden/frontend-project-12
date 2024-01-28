@@ -1,9 +1,11 @@
 import i18next from 'i18next';
+import leoProfanity from 'leo-profanity';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { Provider } from 'react-redux';
+
 import App from './components/App';
-import createStore from './createStore.js';
-import resources from './locales/index.js';
+import resources from './locales/index';
+import createStore from './store/createStore';
 
 import './index.css';
 
@@ -16,6 +18,9 @@ const init = async () => {
   });
 
   const store = createStore();
+
+  const ruDictionary = leoProfanity.getDictionary('ru');
+  leoProfanity.add(ruDictionary);
 
   return (
     <I18nextProvider i18n={i18n}>

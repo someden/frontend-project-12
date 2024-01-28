@@ -2,11 +2,11 @@ import React from 'react';
 import { Modal as BootstrapModal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 
-import { actions, useIsModalOpened, useModalType } from '../slices/ui.js';
+import { actions, useIsModalOpened, useModalType } from '../../store/ui';
 
-import Add from './Add.js';
-import Delete from './Delete.js';
-import Rename from './Rename.js';
+import Add from './Add';
+import Delete from './Delete';
+import Rename from './Rename';
 
 const mapping = {
   add: Add,

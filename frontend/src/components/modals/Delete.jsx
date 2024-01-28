@@ -3,8 +3,8 @@ import { Button, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { useDeleteChannelMutation } from '../../api.js';
-import { useModalExtra } from '../../slices/ui.js';
+import { useDeleteChannelMutation } from '../../store/api';
+import { useModalExtra } from '../../store/ui';
 
 const Delete = ({ handleClose }) => {
   const { t } = useTranslation();
@@ -13,9 +13,14 @@ const Delete = ({ handleClose }) => {
   const channelId = useModalExtra();
   const handleDelete = async () => {
     setLoading(true);
-    await deleteChannel(channelId).unwrap();
-    toast.success(t('channels.deleted'));
-    handleClose();
+    try {
+      await deleteChannel(channelId).unwrap();
+      toast.success(t('channels.deleted'));
+      handleClose();
+    } catch (error) {
+      toast.error(t('errors.network'));
+      setLoading(false);
+    }
   };
 
   return (

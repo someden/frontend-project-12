@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useRef } from 'react';
-import { Button, Card, Col, Container, FloatingLabel, Form, Row } from 'react-bootstrap';
+import {
+  Button, Card, Col, Container, FloatingLabel, Form, Row,
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import avatarSrc from '../assets/avatar.jpg';
-import routes from '../routes.js';
-import { actions } from '../slices/auth.js';
+import routes from '../routes';
+import { actions } from '../store/auth';
 
 const LoginPage = () => {
   const usernameRef = useRef();
@@ -42,7 +44,7 @@ const LoginPage = () => {
         }
 
         if (error.response?.status === 401) {
-          formik.setFieldError('password', t('errors.authFailed'));
+          formik.setFieldError('password', 'errors.authFailed');
           usernameRef.current.select();
         } else {
           toast.error(t('errors.network'));
@@ -70,17 +72,18 @@ const LoginPage = () => {
                     <h1 className="text-center mb-4">{t('login.title')}</h1>
                     <FloatingLabel
                       controlId="username"
-                      className="mb-3"
+                      className="mb-4"
                       label={t('login.username')}
                     >
                       <Form.Control
-                        onChange={formik.handleChange}
-                        value={formik.values.username}
-                        name="username"
                         autoComplete="username"
                         isInvalid={Boolean(formik.errors.password)}
-                        required
+                        name="username"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
                         ref={usernameRef}
+                        required
+                        value={formik.values.username}
                       />
                     </FloatingLabel>
                     <FloatingLabel
@@ -89,16 +92,17 @@ const LoginPage = () => {
                       label={t('login.password')}
                     >
                       <Form.Control
-                        type="password"
-                        onChange={formik.handleChange}
-                        value={formik.values.password}
-                        name="password"
                         autoComplete="current-password"
                         isInvalid={Boolean(formik.errors.password)}
+                        name="password"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
                         required
+                        type="password"
+                        value={formik.values.password}
                       />
                       <Form.Control.Feedback type="invalid" tooltip>
-                        {formik.errors.password}
+                        {t(formik.errors.password)}
                       </Form.Control.Feedback>
                     </FloatingLabel>
                     <Button type="submit" variant="outline-primary" className="w-100">
@@ -110,7 +114,9 @@ const LoginPage = () => {
             </Card.Body>
             <Card.Footer className="p-4">
               <div className="text-center">
-                {t('login.noAccount')} <Link to="/signup">{t('login.signup')}</Link>
+                {t('login.noAccount')}
+                {' '}
+                <Link to={routes.signupPage()}>{t('login.signup')}</Link>
               </div>
             </Card.Footer>
           </Card>
