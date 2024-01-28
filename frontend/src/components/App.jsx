@@ -10,6 +10,7 @@ import LoginPage from './LoginPage.jsx';
 import MainPage from './MainPage.jsx';
 import Navbar from './Navbar.jsx';
 import NotFoundPage from './NotFoundPage.jsx';
+import SignupPage from './SignupPage.jsx';
 
 const PrivateRoute = ({ children }) => {
   const isAuthorized = useIsAuthorized();
@@ -32,6 +33,7 @@ const App = () => (
           }
         />
         <Route path={routes.loginPage()} element={<LoginPage />} />
+        <Route path={routes.signupPage()} element={<SignupPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Stack>
